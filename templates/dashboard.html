@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabPFN-3.5 Enterprise Risk Intelligence Engine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-obsidian: #060913;
+            --card-glass: rgba(17, 24, 39, 0.7);
+            --border-glow: rgba(59, 130, 246, 0.2);
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+        }
+
+        body { 
+            background-color: var(--bg-obsidian); 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-obsidian) 70%);
+            min-height: 100vh;
+        }
+
+        .hero { 
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%); 
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4); 
+            padding: 3rem 0; 
+            backdrop-filter: blur(10px);
+        }
+
+        .card { 
+            background-color: var(--card-glass); 
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+            color: #f8fafc; 
+        }
+
+        .form-control, .form-select { 
+            background-color: rgba(15, 23, 42, 0.6); 
+            border: 1px solid rgba(71, 85, 105, 0.5); 
+            color: #fff; 
+            border-radius: 0.50rem;
+            padding: 0.75rem;
+        }
+
+        .form-control:focus, .form-select:focus { 
+            background-color: rgba(15, 23, 42, 0.9); 
+            color: #fff; 
+            border-color: var(--accent-cyan); 
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); 
+        }
+
+        .nav-tabs { border-bottom: 1px solid rgba(51, 65, 85, 0.5); }
+        .nav-tabs .nav-link { color: #94a3b8; border: none; font-weight: 600; padding: 1rem 1.5rem; transition: all 0.2s; }
+        .nav-tabs .nav-link:hover { color: #fff; }
+        .nav-tabs .nav-link.active { background-color: rgba(30, 41, 59, 0.8); color: var(--accent-cyan); border-bottom: 2px solid var(--accent-cyan); border-radius: 0.5rem 0.5rem 0 0; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border: none;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .btn-info:hover {
+            background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+            color: #0f172a;
+        }
+
+        table { color: #f8fafc !important; }
+        .table-dark { background-color: transparent !important; }
+        .table-dark td, .table-dark th { background-color: rgba(30, 41, 59, 0.4) !important; border-color: rgba(51, 65, 85, 0.4); }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 9, 19, 0.9);
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Loading & Under-the-Hood Telemetry Overlay -->
+    <div id="loading-overlay">
+        <div class="spinner-border text-info mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+        <h4 class="text-light fw-bold" id="loading-title">Executing TabPFN-3.5 Inference...</h4>
+        <p class="text-info font-monospace small" id="loading-step">Streaming tensors & executing High-Effort Thinking Mode...</p>
+    </div>
+
+    <div class="hero text-center mb-5 shadow-lg">
+        <div class="container">
+            <span class="badge bg-dark border border-info text-info px-3 py-1 mb-2 rounded-pill font-monospace">PRIOR LABS HACKATHON ENTRY</span>
+            <h1 class="display-5 fw-bold text-light tracking-tight">TabPFN-3.5 Enterprise Risk Intelligence Engine</h1>
+            <p class="text-secondary lead">Autonomous Tabular Foundation Model with Calibrated Uncertainty & Test-Time Compute</p>
+            <div class="mt-3">
+                <span class="badge bg-primary px-3 py-2 fs-6 shadow-sm">Verified Benchmark ROC AUC: <strong>{{ test_auc }}</strong></span>
+                <span class="badge bg-dark border border-secondary px-3 py-2 fs-6 ms-2">Engine: API v3.5 (High Effort)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        {% if batch_results %}<span id="batch-results-marker" hidden></span>{% endif %}
+        <ul class="nav nav-tabs mb-4 justify-content-center" id="riskTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">Single Account Assessment</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">Batch Portfolio Scoring (CSV)</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="riskTabsContent">
+            <!-- Single Evaluation Tab -->
+            <div class="tab-pane fade show active" id="single" role="tabpanel">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="card p-5">
+                            <form method="POST" action="/predict_single" onsubmit="showLoading('Single Account Risk Inference', 'Passing telemetry features to TabPFN-3.5 API...')">
+                                <h4 class="mb-4 text-info fw-bold border-bottom border-secondary pb-2">Financial Telemetry Parameters</h4>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Checking Account Status</label>
+                                        <input type="number" step="any" class="form-control" name="checking_status" value="1.5" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Credit Duration (Months)</label>
+                                        <input type="number" class="form-control" name="duration" value="24" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Credit History Rating</label>
+                                        <input type="number" class="form-control" name="credit_history" value="2" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Credit Amount Requested</label>
+                                        <input type="number" class="form-control" name="credit_amount" value="3500" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Savings Account Balance</label>
+                                        <input type="number" class="form-control" name="savings_status" value="1" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-secondary small fw-semibold">Employment Duration</label>
+                                        <input type="number" class="form-control" name="employment" value="3" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-3 mt-4 fw-bold shadow-lg">Execute TabPFN-3.5 Risk Inference</button>
+                            </form>
+
+                            {% if result %}
+                            <div class="mt-5 p-4 rounded-4 {% if result.risk_probability > 50 %}bg-danger bg-opacity-10 border border-danger border-opacity-50{% else %}bg-success bg-opacity-10 border border-success border-opacity-50{% endif %} text-center shadow-sm">
+                                <h4 class="mb-2 text-uppercase tracking-wider">Assessment Outcome: <span class="fw-bold {% if result.risk_probability > 50 %}text-danger{% else %}text-success{% endif %}">{{ result.classification }}</span></h4>
+                                <hr class="my-3 border-secondary opacity-50">
+                                
+                                <div class="row mt-3 g-3">
+                                    <div class="col-4">
+                                        <span class="text-secondary small d-block">Default Probability</span>
+                                        <h3 class="fw-bold mb-0">{{ result.risk_probability }}%</h3>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="text-secondary small d-block">Secure Probability</span>
+                                        <h3 class="fw-bold mb-0">{{ result.secure_probability }}%</h3>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="text-secondary small d-block">Confidence Margin</span>
+                                        <h3 class="fw-bold mb-0">{{ result.confidence_margin }}%</h3>
+                                    </div>
+                                </div>
+
+                                <!-- Calibrated Probability Distribution Bar -->
+                                <div class="mt-4 text-start">
+                                    <div class="d-flex justify-content-between small text-secondary mb-1">
+                                        <span>Calibrated Risk Distribution</span>
+                                        <span>Secure ({{ result.secure_probability }}%) vs Default ({{ result.risk_probability }}%)</span>
+                                    </div>
+                                    <div class="progress bg-dark" style="height: 12px; border-radius: 6px; overflow: hidden;">
+                                        <div class="progress-bar bg-success probability-bar" role="progressbar" data-width="{{ result.secure_probability }}" aria-valuenow="{{ result.secure_probability }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-danger probability-bar" role="progressbar" data-width="{{ result.risk_probability }}" aria-valuenow="{{ result.risk_probability }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Training Row Attribution Panel -->
+                                {% if result.influential_cases %}
+                                <div class="mt-4 p-3 rounded-3 bg-black bg-opacity-40 border border-secondary text-start">
+                                    <h6 class="text-info fw-bold mb-2">🔍 TabPFN-3.5 Training Row Attribution (Top Influences)</h6>
+                                    <p class="text-secondary small mb-2">Closest historical baseline cases driving this model decision:</p>
+                                    <ul class="list-group list-group-flush bg-transparent">
+                                        {% for case in result.influential_cases %}
+                                        <li class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center py-2">
+                                            <span class="font-monospace small">Historical Case #{{ case.index }} ({{ case.outcome }})</span>
+                                            <span class="badge bg-info text-dark fw-bold">Similarity: {{ case.match_score }}%</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Scoring Tab -->
+            <div class="tab-pane fade" id="batch" role="tabpanel">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="card p-5">
+                            <h4 class="mb-3 text-info fw-bold">Batch Portfolio Analysis</h4>
+                            <p class="text-secondary small mb-4">Upload a portfolio CSV file. TabPFN-3.5 will evaluate every record in a single forward pass and generate an auto-ranked risk matrix.</p>
+                            
+                            <form method="POST" action="/predict_batch" enctype="multipart/form-data" onsubmit="showLoading('Batch Portfolio Inference', 'Parsing CSV, streaming tensors, and calculating batch risk probabilities...')">
+                                <div class="mb-4">
+                                    <input type="file" class="form-control" name="batch_file" accept=".csv" required>
+                                </div>
+                                <button type="submit" class="btn btn-info w-100 py-3 fw-bold shadow-lg">Process Portfolio Batch</button>
+                            </form>
+
+                            {% if batch_results %}
+                            <!-- Executive Portfolio Summary Card -->
+                            <div class="row mt-4 g-3">
+                                <div class="col-12">
+                                    <div class="p-4 rounded-3 bg-dark border border-info border-opacity-50 shadow-sm">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5 class="text-info fw-bold mb-0">📊 Executive Portfolio Risk Summary</h5>
+                                            <span class="badge bg-info text-dark font-monospace">Certified Audit Ready</span>
+                                        </div>
+                                        <div class="row text-center g-2">
+                                            <div class="col-md-3 col-6 border-end border-secondary">
+                                                <small class="text-secondary d-block">Total Exposure</small>
+                                                <h4 class="fw-bold text-light mb-0">{{ portfolio_summary.total_exposure }}</h4>
+                                            </div>
+                                            <div class="col-md-3 col-6 border-end border-secondary">
+                                                <small class="text-secondary d-block">Avg Default Index</small>
+                                                <h4 class="fw-bold text-warning mb-0">{{ portfolio_summary.avg_default_prob }}%</h4>
+                                            </div>
+                                            <div class="col-md-3 col-6 border-end border-secondary">
+                                                <small class="text-secondary d-block">High-Risk Accounts</small>
+                                                <h4 class="fw-bold text-danger mb-0">{{ portfolio_summary.high_risk_count }}</h4>
+                                            </div>
+                                            <div class="col-md-3 col-6">
+                                                <small class="text-secondary d-block">Secure Accounts</small>
+                                                <h4 class="fw-bold text-success mb-0">{{ portfolio_summary.secure_count }}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if batch_results %}
+                            <div class="mt-4 table-responsive rounded-3 border border-secondary" style="max-height: 450px; overflow-y: auto;">
+                                <table class="table table-dark table-striped table-hover align-middle mb-0">
+                                    <thead>
+                                        <tr class="text-secondary">
+                                            <th>Index</th>
+                                            <th>Credit Amount</th>
+                                            <th>Duration</th>
+                                            <th>Default Probability</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in batch_results %}
+                                        <tr>
+                                            <td>{{ loop.index }}</td>
+                                            <td>${{ row.get('credit_amount', 'N/A') }}</td>
+                                            <td>{{ row.get('duration', 'N/A') }} mo</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="badge {% if row.get('Default_Probability_Pct', 0) > 50 %}bg-danger{% else %}bg-success{% endif %} me-2 px-2 py-1">
+                                                        {{ row.get('Default_Probability_Pct') }}%
+                                                    </span>
+                                                    <div class="progress flex-grow-1 bg-dark" style="height: 6px; width: 80px;">
+                                                        <div class="progress-bar probability-bar {% if row.get('Default_Probability_Pct', 0) > 50 %}bg-danger{% else %}bg-success{% endif %}" data-width="{{ row.get('Default_Probability_Pct') }}"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-9">
+                <div class="alert alert-danger text-center shadow border-0 bg-danger bg-opacity-25 text-light">{{ error }}</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showLoading(title, step) {
+            document.getElementById('loading-title').innerText = title;
+            document.getElementById('loading-step').innerText = step;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.probability-bar[data-width]').forEach(function (bar) {
+                bar.style.width = bar.dataset.width + '%';
+            });
+
+            const hasBatchResults = document.getElementById('batch-results-marker') !== null;
+            if (hasBatchResults) {
+                const batchTabBtn = document.querySelector('#batch-tab');
+                const batchTabPane = document.querySelector('#batch');
+                const singleTabBtn = document.querySelector('#single-tab');
+                const singleTabPane = document.querySelector('#single');
+
+                if (batchTabBtn && batchTabPane) {
+                    singleTabBtn.classList.remove('active');
+                    singleTabPane.classList.remove('show', 'active');
+                    batchTabBtn.classList.add('active');
+                    batchTabPane.classList.add('show', 'active');
+                }
+            }
+
+            const activeTab = localStorage.getItem('activeRiskTab');
+            if (activeTab && !hasBatchResults) {
+                const tabButton = document.querySelector(activeTab);
+                if (tabButton) {
+                    const tab = new bootstrap.Tab(tabButton);
+                    tab.show();
+                }
+            }
+
+            document.querySelectorAll('button[data-bs-toggle="tab"]').forEach((button) => {
+                button.addEventListener('shown.bs.tab', function (event) {
+                    localStorage.setItem('activeRiskTab', '#' + event.target.id);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
