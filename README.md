@@ -1,4 +1,4 @@
-# RiskLens: Enterprise Credit Scoring & Portfolio Analytics Engine
+# RiskLens: Credit Scoring & Portfolio Analytics Engine
 
 ## Overview
 
@@ -108,8 +108,8 @@ To set up and run the application locally or within a development container (suc
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/aysh34/risk-lens.git
-cd risk-lens
+git clone https://github.com/aysh34/RiskLens.git
+cd RiskLens
 
 ```
 
